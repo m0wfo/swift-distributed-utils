@@ -69,7 +69,6 @@ public class PhiAccrualDetector {
         var intervals: [Double]
         var sum: Double = 0
         var intervalSum: Double = 0
-        var squaredIntervalSum: Double = 0
 
         init() {
             self.maxSampleSize = 200
@@ -80,11 +79,9 @@ public class PhiAccrualDetector {
             if intervals.count >= maxSampleSize {
                 let dropped = intervals.dropFirst().first!
                 sum -= dropped
-                squaredIntervalSum -= pow(2, dropped)
             }
             intervals.append(interval)
             intervalSum += interval
-            squaredIntervalSum += pow(2, interval)
         }
 
         func mean() -> Double {
@@ -92,7 +89,7 @@ public class PhiAccrualDetector {
         }
 
         func variance() -> Double {
-            return (squaredIntervalSum / Double(intervals.count)) - pow(2, mean())
+            return (pow(2, intervalSum) / Double(intervals.count)) - pow(2, mean())
         }
 
         func stdDeviation() -> Double {
