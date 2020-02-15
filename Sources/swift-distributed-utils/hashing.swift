@@ -1,8 +1,8 @@
 import Foundation
 
-public final class Node : Codable, Comparable {
+fileprivate final class Node : Codable, Comparable, Hashable {
 
-    private let label: String
+    public let label: String
 
     init(_ label: String) {
         self.label = label
@@ -11,44 +11,47 @@ public final class Node : Codable, Comparable {
     public static func ==(lhs: Node, rhs: Node) -> Bool {
         return lhs.label == rhs.label
     }
-    
-    public static func <(lhs: Node, rhs: Node) -> Bool {
-        return true
+
+    static func <(lhs: Node, rhs: Node) -> Bool {
+        return lhs.label < rhs.label
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(label.hashValue)
     }
 }
 
-public protocol HashRing {
-    func addNode(_ node: Node)
-    func removeNode(_ node: Node)
-    func getNode(_ key: Codable) -> Node
+public protocol HashRing : Codable {
+    func addNode(_ node: String)
+    func removeNode(_ node: String)
+    func getNode(_ key: Int) -> String?
 }
 
 public final class ConsistentHashRing : HashRing {
 
-    public func addNode(_ node: Node) {
+    private var nodes: [Node]
+    private let pointSpace: UInt64
+
+    init() {
+        self.pointSpace = 1 << 63
+        self.nodes = Array()
+    }
+
+    public func addNode(_ label: String) {
+        nodes.sort()
+    }
+
+    public func removeNode(_ label: String) {
         
     }
 
-    public func removeNode(_ node: Node) {
-        
-    }
+    public func getNode(_ key: Int) -> String? {
+        if nodes.isEmpty {
+            return nil
+        }
 
-    public func getNode(_ key: Codable) -> Node {
-        return Node("foo")
-    }
-}
+        let bucket = pointSpace % UInt64(key)
 
-public final class MaglevHashRing : HashRing {
-
-    public func addNode(_ node: Node) {
-        
-    }
-
-    public func removeNode(_ node: Node) {
-        
-    }
-
-    public func getNode(_ key: Codable) -> Node {
-        return Node("foo")
+        return Search.binarySearchOrNextHighest(array: nodes, target: Node("hi")).map { return $0.label }
     }
 }
