@@ -1,0 +1,13 @@
+# For a detailed guide to building and testing on iOS, read the docs:
+# https://circleci.com/docs/2.0/testing-ios/
+
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: swift:5.1
+    steps:
+      - checkout
+      - run: swift build
+
