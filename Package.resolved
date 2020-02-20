@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "xxHash-Swift",
+        "repositoryURL": "https://github.com/daisuke-t-jp/xxHash-Swift.git",
+        "state": {
+          "branch": null,
+          "revision": "44c7d1df3739b09330ef484efcc2977bb4943f87",
+          "version": "1.0.13"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
