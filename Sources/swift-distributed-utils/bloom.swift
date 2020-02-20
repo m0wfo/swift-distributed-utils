@@ -14,7 +14,7 @@ public protocol BloomFilter : AnyObject {
 }
 
 // Based on the principle outlined in 'Less Hashing, Same Performance' by Kirsch & Mitzenmacher
-// Rather than 16 separate functions, we take the output of one 64 bit fn and accumulate
+// Rather than N separate functions, we take the output of one 64 bit fn and accumulate
 // each 32-bit half with the loop variable to get the index to flip
 //
 // See https://www.eecs.harvard.edu/~michaelm/postscripts/rsa2008.pdf
