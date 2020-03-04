@@ -1,4 +1,5 @@
 import Foundation
+import xxHash_Swift
 
 fileprivate final class Node : Codable, Comparable, Hashable {
 
@@ -21,23 +22,26 @@ fileprivate final class Node : Codable, Comparable, Hashable {
     }
 }
 
-public protocol HashRing : Codable {
+public protocol HashRing {
     func addNode(_ node: String)
     func removeNode(_ node: String)
     func getNode(_ key: Int) -> String?
 }
 
-public final class ConsistentHashRing : HashRing {
+public final class ConsistentHashRing : HashRing, Codable {
 
     private var nodes: [Node]
+    private var nodeAddresses: [Node:UInt64]
     private let pointSpace: UInt64
 
-    init() {
-        self.pointSpace = 1 << 63
+    init(pointSpace: UInt64 = (1 << 63)) {
+        self.pointSpace = pointSpace
         self.nodes = Array()
+        self.nodeAddresses = Dictionary()
     }
 
     public func addNode(_ label: String) {
+        nodes.append(Node(label))
         nodes.sort()
     }
 
@@ -54,4 +58,8 @@ public final class ConsistentHashRing : HashRing {
 
         return Search.binarySearchOrNextHighest(array: nodes, target: Node("hi")).map { return $0.label }
     }
+    
+//    public static func ==(lhs: ConsistentHashRing, rhs: ConsistentHashRing) -> Bool {
+//        return lhs.nodes == rhs.nodes
+//    }
 }
