@@ -6,6 +6,7 @@ jobs:
       - image: swift:5.1
     steps:
       - checkout
+      - run: swift test --generate-linuxmain
       - run: swift test
   validate:
     docker:
