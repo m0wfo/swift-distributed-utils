@@ -7,6 +7,7 @@ public class BloomFilterTests : XCTestCase {
     private var bf: SIMDBloomFilter = SIMDBloomFilter()
 
     override func setUp() {
+        super.setUp()
         bf = SIMDBloomFilter()
     }
 
