@@ -1,7 +1,8 @@
 import XCTest
 
-import swift_distributed_utilsTests
+import SwiftDistributedUtilsTests
 
 var tests = [XCTestCaseEntry]()
-tests += SwiftDistributedUtils.allTests()
+tests += SwiftDistributedUtilsTests.__allTests()
+
 XCTMain(tests)
