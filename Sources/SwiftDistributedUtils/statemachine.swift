@@ -37,7 +37,7 @@ public class StateMachine<T: Hashable> {
     }
 
     public func transition(_ event: T) -> TransitionState<T> {
-        
+
         return currentState
     }
 

@@ -3,7 +3,7 @@ import class Foundation.Bundle
 import SwiftDistributedUtils
 
 class BloomFilterTests : XCTestCase {
-    
+
     private var bf: SIMDBloomFilter = SIMDBloomFilter()
 
     override func setUp() {

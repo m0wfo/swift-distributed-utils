@@ -19,10 +19,10 @@ fileprivate class TreeNode<T: Comparable> {
 }
 
 public class BinaryTree<T: Comparable> {
-    
+
     var count: Int
     private var root: TreeNode<T>?
-    
+
     init() {
         self.count = 0
     }

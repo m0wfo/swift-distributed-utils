@@ -1,8 +1,8 @@
 import Foundation
 
-public final class RadixTree<T: Equatable & Codable> : Codable {
+public final class RadixTree<T: Equatable> {
 
-    private class Node<T: Equatable & Codable> : Equatable, Codable {
+    private class Node<T: Equatable>: Equatable {
 
         private let me: T
         let children: [Node<T>] = Array()

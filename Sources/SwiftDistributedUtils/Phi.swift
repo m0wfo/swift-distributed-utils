@@ -1,13 +1,13 @@
 import Foundation
 
-public class PhiAccrualDetector {
+public final class PhiAccrualDetector {
 
     private let threshold: Double
     private let jitterMs: Double
     private let history: HeartbeatHistory
     private var lastTimestamp: Double = -1
 
-    init(threshold: Double, jitterMs: Double = 200) {
+    public init(threshold: Double, jitterMs: Double = 200) {
         self.threshold = threshold
         self.jitterMs = jitterMs
         self.history = HeartbeatHistory()
@@ -23,11 +23,11 @@ public class PhiAccrualDetector {
         }
         lastTimestamp = currentTimestamp
     }
-    
+
     func isAvailable() -> Bool {
         return isAvailable(PhiAccrualDetector.timeNow())
     }
-    
+
     func phi() -> Double {
         return phi(PhiAccrualDetector.timeNow())
     }
@@ -44,14 +44,14 @@ public class PhiAccrualDetector {
         if lastTimestamp == -1 {
             return 0.0
         }
-        
+
         let interval = currentTimestamp - lastTimestamp
         let meanIntervalMs = history.mean() + jitterMs
         let stdDeviationMs = max(history.stdDeviation(), 3.0)
-        
+
         let y = (interval - meanIntervalMs) / stdDeviationMs
         let e = exp(-y * (1.5976 + 0.070566 * y * y))
-        
+
         if interval > meanIntervalMs {
             return -log10(e / (1.0 + e))
         } else {

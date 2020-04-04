@@ -11,7 +11,7 @@ public final class XORShift {
 
     private var state: UInt64
 
-    init(state: UInt64) {
+    public init(state: UInt64) {
         self.state = state
     }
 
