@@ -32,6 +32,10 @@ workflows:
       - build
       - validate
       - bump_version:
+          filters:
+            branches:
+              only:
+                - master
           requires:
             - build
             - validate
