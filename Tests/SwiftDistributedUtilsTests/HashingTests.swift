@@ -27,7 +27,7 @@ class HashingTests: XCTestCase {
         XCTAssertNotNil(ring.getNode(w))
 
         ring.removeNode("node0")
-        
+
         XCTAssertNotNil(ring.getNode(w))
 
         ring.removeNode("node1")

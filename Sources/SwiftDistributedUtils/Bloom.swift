@@ -1,16 +1,17 @@
 //
-//  bloom.swift
+//  Bloom.swift
 //
 //
 //  Created by Chris Mowforth on 20/02/2020.
 //
 
 import Foundation
-import xxHash_Swift
 
-public protocol BloomFilter : AnyObject {
+public protocol BloomFilter: AnyObject {
     func put(item: String)
+    func put(item: [UInt8])
     func mightContain(item: String) -> Bool
+    func mightContain(item: [UInt8]) -> Bool
 }
 
 // Based on the principle outlined in 'Less Hashing, Same Performance' by Kirsch & Mitzenmacher
@@ -30,6 +31,10 @@ public final class NaiveBloomFilter: BloomFilter {
     }
 
     public func put(item: String) {
+        put(item: Array(item.utf8))
+    }
+
+    public func put(item: [UInt8]) {
         let (lowerHalf, upperHalf) = getInitialHash(item)
         for i in 1...hashingRounds {
             let combined = lowerHalf + (upperHalf * UInt64(i))
@@ -38,6 +43,10 @@ public final class NaiveBloomFilter: BloomFilter {
     }
 
     public func mightContain(item: String) -> Bool {
+        return mightContain(item: Array(item.utf8))
+    }
+
+    public func mightContain(item: [UInt8]) -> Bool {
         let (lowerHalf, upperHalf) = getInitialHash(item)
         var count = 0
         for i in 1...hashingRounds {
@@ -49,8 +58,8 @@ public final class NaiveBloomFilter: BloomFilter {
         return count == hashingRounds
     }
 
-    private func getInitialHash(_ item: String) -> (UInt64, UInt64) {
-        let hash = XXH64.digest(item).littleEndian
+    private func getInitialHash(_ item: [UInt8]) -> (UInt64, UInt64) {
+        let hash = Murmur.hash(data: item).littleEndian
         let lowerHalf = hash & 0xFFFFFFFF
         let upperHalf = (hash >> 32) & 0xFFFFFFFF
         return (lowerHalf, upperHalf)
@@ -75,6 +84,10 @@ public final class SIMDBloomFilter: BloomFilter {
     }
 
     public func put(item: String) {
+        put(item: Array(item.utf8))
+    }
+
+    public func put(item: [UInt8]) {
         let indices = getHashMask(item)
         for i in 0..<hashingRounds {
             self.array[Int(indices[i])] = true
@@ -82,6 +95,10 @@ public final class SIMDBloomFilter: BloomFilter {
     }
 
     public func mightContain(item: String) -> Bool {
+        return mightContain(item: Array(item.utf8))
+    }
+
+    public func mightContain(item: [UInt8]) -> Bool {
         let indices = getHashMask(item)
         var count = 0
         for i in 0..<hashingRounds {
@@ -92,8 +109,8 @@ public final class SIMDBloomFilter: BloomFilter {
         return count == hashingRounds
     }
 
-    private func getHashMask(_ item: String) -> SIMD16<UInt64> {
-        let hash = XXH64.digest(item).littleEndian
+    private func getHashMask(_ item: [UInt8]) -> SIMD16<UInt64> {
+        let hash = Murmur.hash(data: item).littleEndian
         let lowerHalf = hash & 0xFFFFFFFF
         let upperHalf = (hash >> 32) & 0xFFFFFFFF
 

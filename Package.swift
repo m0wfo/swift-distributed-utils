@@ -9,12 +9,11 @@ let package = Package(
         .library(name: "SwiftDistributedUtils", targets: ["SwiftDistributedUtils"])
     ],
     dependencies: [
-        .package(url: "https://github.com/daisuke-t-jp/xxHash-Swift.git", from: "1.0.12")
     ],
     targets: [
         .target(
             name: "SwiftDistributedUtils",
-            dependencies: ["xxHash-Swift"]),
+            dependencies: []),
         .testTarget(
             name: "SwiftDistributedUtilsTests",
             dependencies: ["SwiftDistributedUtils"]),
