@@ -2,6 +2,8 @@ import Foundation
 
 // MARK: Consistent hashing routines
 
+/// Ouf of the box Swift hash codes are implementation-dependant and not stable across restarts.
+/// This protocol is useful for objects which need a deterministic hash, akin to Java's `Object#hashCode`
 public protocol StableHashable {
 
     var identity: UInt64 { get }
@@ -41,6 +43,7 @@ public final class Node: Codable, Comparable, StableHashable, Hashable {
     }
 }
 
+/// A consistently hashed ring of nodes.
 public protocol HashRing {
     associatedtype Item: StableHashable
 
@@ -49,6 +52,7 @@ public protocol HashRing {
     func getNode(_ item: Item) -> Node?
 }
 
+/// Classical consistent hash ring, using a binary search to find the next highest node for an item
 public final class ConsistentHashRing<T: StableHashable>: HashRing, Equatable {
     public typealias Item = T
 
@@ -109,6 +113,7 @@ extension UInt64 {
     }
 }
 
+// 64-bit Murmur Hash implementation
 public final class Murmur {
 
     static let c1: UInt64 = 0x87c37b91114253d5

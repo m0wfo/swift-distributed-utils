@@ -1,0 +1,9 @@
+.build
+.circleci
+.swiftpm
+IntegrationTests
+.bumpversion.cfg
+.gitignore
+.DS_Store
+README.md
+IntegrationTests.bash

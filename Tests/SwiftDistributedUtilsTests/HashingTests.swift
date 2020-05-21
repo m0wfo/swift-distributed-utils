@@ -20,7 +20,7 @@ class HashingTests: XCTestCase {
         ring.addNode("node0")
 
         ring.addNode("node1")
-        
+
         let w = Widget()
         w.identity = 14
 

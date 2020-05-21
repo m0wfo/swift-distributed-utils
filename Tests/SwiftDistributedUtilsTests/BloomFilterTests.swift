@@ -2,7 +2,7 @@ import XCTest
 import class Foundation.Bundle
 import SwiftDistributedUtils
 
-class BloomFilterTests : XCTestCase {
+class BloomFilterTests: XCTestCase {
 
     private var bf: SIMDBloomFilter = SIMDBloomFilter()
 

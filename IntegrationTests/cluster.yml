@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: integration
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: integration
+  template:
+    metadata:
+      labels:
+        app: integration
+    spec:
+      containers:
+      - name: swift-distributed-utils
+        image: swift-distributed-utils-integration:TAGNAME
+        imagePullPolicy: Never
