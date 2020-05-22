@@ -19,7 +19,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "c8:96:78:e4:f0:49:4e:49:f8:f2:87:80:c5:a7:53:7c"
+            - "7b:f0:f0:31:ac:72:de:1a:f1:10:7e:c3:dc:1e:be:2c"
       - checkout
       - run:
           name: run bumpversion and push
