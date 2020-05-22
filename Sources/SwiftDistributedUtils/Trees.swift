@@ -18,7 +18,10 @@ fileprivate class TreeNode<T: Comparable> {
     var right: TreeNode<T>?
 }
 
-public class BinaryTree<T: Comparable> {
+// MARK: Tree implementations
+
+/// A basic binary tree
+public final class BinaryTree<T: Comparable> {
 
     var count: Int
     private var root: TreeNode<T>?
@@ -60,5 +63,41 @@ public class BinaryTree<T: Comparable> {
                 }
             }
         } while true
+    }
+}
+
+// A radix tree
+public final class RadixTree<T: Equatable> {
+
+    private class Node<T: Equatable>: Equatable {
+
+        private let me: T
+        let children: [Node<T>] = Array()
+
+        init(_ o: T) {
+            self.me = o
+        }
+
+        public static func == (lhs: Node<T>, rhs: Node<T>) -> Bool {
+            return lhs.me == rhs.me && lhs.children == rhs.children
+        }
+    }
+
+    private var root: Node<T>?
+
+    func contains(_ o: T) -> Bool {
+        return false
+    }
+
+    func add(_ o: T) {
+        if let r = root {
+            //
+        } else {
+            self.root = Node(o)
+        }
+    }
+
+    func remove(_ o: T) {
+
     }
 }

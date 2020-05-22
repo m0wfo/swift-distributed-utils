@@ -59,7 +59,7 @@ public final class NaiveBloomFilter: BloomFilter {
     }
 
     private func getInitialHash(_ item: [UInt8]) -> (UInt64, UInt64) {
-        let hash = Murmur.hash(data: item).littleEndian
+        let hash = XXHash.hash(data: item).littleEndian
         let lowerHalf = hash & 0xFFFFFFFF
         let upperHalf = (hash >> 32) & 0xFFFFFFFF
         return (lowerHalf, upperHalf)
@@ -110,7 +110,7 @@ public final class SIMDBloomFilter: BloomFilter {
     }
 
     private func getHashMask(_ item: [UInt8]) -> SIMD16<UInt64> {
-        let hash = Murmur.hash(data: item).littleEndian
+        let hash = XXHash.hash(data: item).littleEndian
         let lowerHalf = hash & 0xFFFFFFFF
         let upperHalf = (hash >> 32) & 0xFFFFFFFF
 
