@@ -14,11 +14,13 @@ public final class Node: Codable, Comparable, StableHashable, Hashable {
     let label: String
     let pointSpace: UInt64
     let id: UInt64?
+    let endpoint: HostAndPort?
 
-    fileprivate init(_ label: String, _ pointSpace: UInt64, id: UInt64? = nil) {
+    fileprivate init(_ label: String, _ pointSpace: UInt64, id: UInt64? = nil, endpoint: HostAndPort? = nil) {
         self.label = label
         self.pointSpace = pointSpace
         self.id = id
+        self.endpoint = endpoint
     }
 
     public var identity: UInt64 {
