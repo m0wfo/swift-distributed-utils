@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/tuplestream/swift-distributed-utils.svg?style=svg)](https://circleci.com/gh/m0wfo/swift-distributed-utils)
+[![CircleCI](https://circleci.com/gh/tuplestream/swift-distributed-utils.svg?style=svg)](https://circleci.com/gh/tuplestream/swift-distributed-utils)
 
 # swift-distributed-utils
 
