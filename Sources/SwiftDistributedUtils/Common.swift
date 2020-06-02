@@ -74,38 +74,11 @@ public final class Search {
 }
 
 // MARK: Service management
-public protocol Service: Hashable {
+public protocol Service {
+
     var name: String { get }
+
     func start() throws
-}
-
-public final class ServiceManager {
-
-    public static let instance = ServiceManager()
-
-    private let services: Set<Service>
-    private let queue: DispatchQueue
-    private let group: DispatchGroup
-
-    private var started: Bool
-
-    init() {
-        self.services = Set()
-        self.queue = DispatchQueue(label: "foo")
-        self.group = DispatchGroup()
-        self.started = false
-    }
-
-    public func addService(_ service: Service) {
-        precondition(!started, "Cannot add services to a ServiceManager that is already started")
-        services.insert(service)
-    }
-
-    public func start() throws {
-        precondition(!started, "Cannot call start() on ServiceManager twice")
-
-        started = true
-    }
 }
 
 open class GenericService: Service, Hashable {
@@ -137,5 +110,44 @@ open class GenericService: Service, Hashable {
 
     public func terminate() throws {
         // no-op by default
+    }
+
+    // hashable impl
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self.name)
+    }
+
+    // equatable impl
+    public static func == (lhs: GenericService, rhs: GenericService) -> Bool {
+        return lhs.name == rhs.name
+    }
+}
+
+public final class ServiceManager {
+
+    public static let instance = ServiceManager()
+
+    private var services: Set<GenericService>
+    private let queue: DispatchQueue
+    private let group: DispatchGroup
+
+    private var started: Bool
+
+    init() {
+        self.services = Set()
+        self.queue = DispatchQueue(label: "foo")
+        self.group = DispatchGroup()
+        self.started = false
+    }
+
+    public func addService(_ service: GenericService) {
+        precondition(!started, "Cannot add services to a ServiceManager that is already started")
+        services.insert(service)
+    }
+
+    public func start() throws {
+        precondition(!started, "Cannot call start() on ServiceManager twice")
+
+        started = true
     }
 }

@@ -29,6 +29,10 @@ internal class BrowserDelegate: NSObject, NetServiceBrowserDelegate {
     func netServiceBrowser(_ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool) {
         print("\(service.name)")
     }
+    
+    func something() -> Bool {
+        return true
+    }
 }
 
 public final class MDNSMembershipTracker: GenericService, MembershipTracker {
@@ -42,7 +46,7 @@ public final class MDNSMembershipTracker: GenericService, MembershipTracker {
         self.browser = NetServiceBrowser()
         browser.delegate = delegate
         self.currentMembers = Set()
+        super.init(serviceName: "howya")
     }
-
 
 }
