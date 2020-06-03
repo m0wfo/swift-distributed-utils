@@ -85,7 +85,7 @@ open class GenericService: Service, Hashable {
 
     public func start() throws {
         log.debug("Starting \(name) service")
-        sleep(32)
+//        sleep(32)
     }
 
     private let log: Logger

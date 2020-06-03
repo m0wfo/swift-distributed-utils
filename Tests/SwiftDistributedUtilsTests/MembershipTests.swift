@@ -14,8 +14,6 @@ import SwiftDistributedUtils
 class MembershipTests: XCTestCase {
 
     func testSpinUpMDNSTracker() throws {
-        let m = MDNSMembershipTracker(serviceType: ".http")
-        let s = GenericService(serviceName: "wibble")
-        try s.start()
+
     }
 }

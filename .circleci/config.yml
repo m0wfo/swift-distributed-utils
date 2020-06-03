@@ -7,6 +7,8 @@ jobs:
     steps:
       - checkout
       - run: swift test
+      - store_test_results:
+          path: tests.xml
   validate:
     docker:
       - image: m0wfo/tailor:0.12.0

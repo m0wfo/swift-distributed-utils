@@ -19,34 +19,7 @@ public enum MembershipEvent {
 
 //public final class KubernetesMembershipTracker: MembershipTracker {
 //    public var currentMembers: Set<HostAndPort>
-//
-//
+//    
+//    
 //
 //}
-
-internal class BrowserDelegate: NSObject, NetServiceBrowserDelegate {
-
-    func netServiceBrowser(_ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool) {
-        print("\(service.name)")
-    }
-    
-    func something() -> Bool {
-        return true
-    }
-}
-
-public final class MDNSMembershipTracker: GenericService, MembershipTracker {
-    public var currentMembers: Set<HostAndPort>
-
-    private let browser: NetServiceBrowser
-    private let delegate: BrowserDelegate
-
-    public init(serviceType: String, searchDomain: String = "local.") {
-        self.delegate = BrowserDelegate()
-        self.browser = NetServiceBrowser()
-        browser.delegate = delegate
-        self.currentMembers = Set()
-        super.init(serviceName: "howya")
-    }
-
-}
