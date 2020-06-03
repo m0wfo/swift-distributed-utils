@@ -6,9 +6,9 @@ jobs:
       - image: swift:5.1
     steps:
       - checkout
-      - run: swift test
+      - run: SWIFT_JUNIT_RESULT_PATH=Tests/tests.xml swift test
       - store_test_results:
-          path: tests.xml
+          path: Tests/tests.xml
   validate:
     docker:
       - image: m0wfo/tailor:0.12.0
