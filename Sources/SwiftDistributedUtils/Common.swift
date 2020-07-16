@@ -11,7 +11,7 @@ import Logging
 // MARK: Common network objects
 public struct HostAndPort: Codable, CustomStringConvertible, Equatable, Hashable {
 
-    enum HostInitializationError: Error {
+    public enum HostInitializationError: Error {
         case invalidPort(port: Int)
     }
 
