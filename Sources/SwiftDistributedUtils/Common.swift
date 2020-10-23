@@ -36,15 +36,34 @@ public struct HostAndPort: Codable, CustomStringConvertible, Equatable, Hashable
 }
 
 // MARK: Time source utilities
-protocol TimeSource {
+public protocol TimeSource {
 
-    func unixTimeMillis() -> Double
+    var unixTimeMillis: Double { get }
 }
 
 public final class SystemTimeSource: TimeSource {
 
-    public func unixTimeMillis() -> Double {
-        return Date().timeIntervalSince1970 * 1000
+    public static let instance = SystemTimeSource()
+
+    public var unixTimeMillis: Double {
+        get {
+            return Date().timeIntervalSince1970 * 1000
+        }
+    }
+}
+
+public final class MockTimeSource: TimeSource {
+
+    public var time: Double
+
+    public init() {
+        time = 0.0
+    }
+
+    public var unixTimeMillis: Double {
+        get {
+            return time
+        }
     }
 }
 
@@ -70,84 +89,5 @@ public final class Search {
         } else {
             return binarySearchOrNextHighest(array: Array(array[midPoint...]), target: target)
         }
-    }
-}
-
-// MARK: Service management
-public protocol Service {
-
-    var name: String { get }
-
-    func start() throws
-}
-
-open class GenericService: Service, Hashable {
-
-    public func start() throws {
-        log.debug("Starting \(name) service")
-//        sleep(32)
-    }
-
-    private let log: Logger
-    private var active: Bool
-    public var name: String
-
-    public init(serviceName: String) {
-        self.log = Logger(label: serviceName)
-        self.active = false
-        self.name = serviceName
-    }
-
-    public var isActive: Bool {
-        get {
-            return active
-        }
-    }
-
-    public func gracefulShutdown() {
-        // no-op by default
-    }
-
-    public func terminate() throws {
-        // no-op by default
-    }
-
-    // hashable impl
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(self.name)
-    }
-
-    // equatable impl
-    public static func == (lhs: GenericService, rhs: GenericService) -> Bool {
-        return lhs.name == rhs.name
-    }
-}
-
-public final class ServiceManager {
-
-    public static let instance = ServiceManager()
-
-    private var services: Set<GenericService>
-    private let queue: DispatchQueue
-    private let group: DispatchGroup
-
-    private var started: Bool
-
-    init() {
-        self.services = Set()
-        self.queue = DispatchQueue(label: "foo")
-        self.group = DispatchGroup()
-        self.started = false
-    }
-
-    public func addService(_ service: GenericService) {
-        precondition(!started, "Cannot add services to a ServiceManager that is already started")
-        services.insert(service)
-    }
-
-    public func start() throws {
-        precondition(!started, "Cannot call start() on ServiceManager twice")
-
-        started = true
     }
 }

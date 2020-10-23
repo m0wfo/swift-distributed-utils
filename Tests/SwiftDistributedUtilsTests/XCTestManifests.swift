@@ -40,7 +40,7 @@ extension MembershipTests {
     //   `swift test --generate-linuxmain`
     // to regenerate.
     static let __allTests__MembershipTests = [
-        ("testSpinUpMDNSTracker", testSpinUpMDNSTracker),
+        ("testSpinUpK8sTracker", testSpinUpK8sTracker),
     ]
 }
 

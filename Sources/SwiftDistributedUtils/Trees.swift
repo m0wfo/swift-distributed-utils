@@ -67,9 +67,9 @@ public final class BinaryTree<T: Comparable> {
 }
 
 // A radix tree
-public final class RadixTree<T: Equatable> {
+public final class RadixTree<T: Equatable & Codable> {
 
-    private class Node<T: Equatable>: Equatable {
+    private class Node<T: Equatable & Codable>: Equatable {
 
         private let me: T
         let children: [Node<T>] = Array()
@@ -93,6 +93,7 @@ public final class RadixTree<T: Equatable> {
         if let r = root {
             //
         } else {
+            // degenerate case
             self.root = Node(o)
         }
     }

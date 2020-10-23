@@ -13,7 +13,6 @@ import SwiftDistributedUtils
 
 class MembershipTests: XCTestCase {
 
-    func testSpinUpMDNSTracker() throws {
-
+    func testSpinUpK8sTracker() throws {
     }
 }

@@ -5,16 +5,18 @@ public final class PhiAccrualDetector {
     private let threshold: Double
     private let jitterMs: Double
     private let history: HeartbeatHistory
+    private let timeSource: TimeSource
     private var lastTimestamp: Double = -1
 
-    public init(threshold: Double, jitterMs: Double = 200) {
+    public init(threshold: Double, jitterMs: Double = 200, timeSource: TimeSource = SystemTimeSource.instance) {
         self.threshold = threshold
         self.jitterMs = jitterMs
         self.history = HeartbeatHistory()
+        self.timeSource = timeSource
     }
 
-    func heartbeat() {
-        let currentTimestamp = PhiAccrualDetector.timeNow()
+    public func heartbeat() {
+        let currentTimestamp = timeSource.unixTimeMillis
         if lastTimestamp != -1 {
             let interval = currentTimestamp - lastTimestamp
             if isAvailable(currentTimestamp) {
@@ -24,12 +26,16 @@ public final class PhiAccrualDetector {
         lastTimestamp = currentTimestamp
     }
 
-    func isAvailable() -> Bool {
-        return isAvailable(PhiAccrualDetector.timeNow())
+    public var isAvailable: Bool {
+        get {
+            return isAvailable(timeSource.unixTimeMillis)
+        }
     }
 
-    func phi() -> Double {
-        return phi(PhiAccrualDetector.timeNow())
+    public var phi: Double {
+        get {
+            return phi(timeSource.unixTimeMillis)
+        }
     }
 
     private func isAvailable(_ currentTimestamp: Double) -> Bool {
@@ -57,10 +63,6 @@ public final class PhiAccrualDetector {
         } else {
             return -log10(1.0 - 1.0 / (1.0 + e))
         }
-    }
-
-    private static func timeNow() -> Double {
-        Date().timeIntervalSince1970 * 1000
     }
 
     fileprivate class HeartbeatHistory {
