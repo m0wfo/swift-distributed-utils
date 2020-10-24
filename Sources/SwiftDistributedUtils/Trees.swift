@@ -90,7 +90,7 @@ public final class RadixTree<T: Equatable & Codable> {
     }
 
     func add(_ o: T) {
-        if let r = root {
+        if let _ = root {
             //
         } else {
             // degenerate case

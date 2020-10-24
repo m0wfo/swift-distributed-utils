@@ -2,25 +2,23 @@ import Foundation
 
 // MARK: Consistent hashing routines
 
-/// Ouf of the box Swift hash codes are implementation-dependant and not stable across restarts.
+/// Ouf of the box Swift hash codes are implementation-dependant and not stable across different processes.
 /// This protocol is useful for objects which need a deterministic hash, akin to Java's `Object#hashCode`
 public protocol StableHashable {
 
     var identity: UInt64 { get }
 }
 
-public final class Node: Codable, Comparable, StableHashable, Hashable {
+public class Node: Codable, Comparable, StableHashable, Hashable {
 
     let label: String
     let pointSpace: UInt64
     let id: UInt64?
-    let endpoint: HostAndPort?
 
-    fileprivate init(_ label: String, _ pointSpace: UInt64, id: UInt64? = nil, endpoint: HostAndPort? = nil) {
+    fileprivate init(_ label: String, _ pointSpace: UInt64, id: UInt64? = nil) {
         self.label = label
         self.pointSpace = pointSpace
         self.id = id
-        self.endpoint = endpoint
     }
 
     public var identity: UInt64 {
