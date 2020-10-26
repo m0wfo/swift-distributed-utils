@@ -1,10 +1,9 @@
-//
-//  statemachine.swift
-//  
-//
-//  Created by Chris Mowforth on 14/02/2020.
-//
+/*
+ Copyright 2020 TupleStream OÜ
 
+ See the LICENSE file for license information
+ SPDX-License-Identifier: Apache-2.0
+*/
 import Foundation
 
 public class TransitionState<T: Hashable> {

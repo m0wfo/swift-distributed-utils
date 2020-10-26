@@ -1,10 +1,9 @@
-//
-//  Membership.swift
-//  
-//
-//  Created by Chris Mowforth on 21/05/2020.
-//
+/*
+ Copyright 2020 TupleStream OÜ
 
+ See the LICENSE file for license information
+ SPDX-License-Identifier: Apache-2.0
+*/
 import Foundation
 import Logging
 

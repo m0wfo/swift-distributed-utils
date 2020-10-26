@@ -1,3 +1,9 @@
+/*
+ Copyright 2020 TupleStream OÜ
+
+ See the LICENSE file for license information
+ SPDX-License-Identifier: Apache-2.0
+*/
 import XCTest
 import class Foundation.Bundle
 import SwiftDistributedUtils
@@ -35,4 +41,8 @@ class CommonTests: XCTestCase {
 //        let result = Search.binarySearchOrNextHighest(array: [1,2,3], target: 2)!
 //        XCTAssertEqual(2, result)
 //    }
+
+    func testCRC32() {
+        
+    }
 }

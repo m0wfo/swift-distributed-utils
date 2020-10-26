@@ -1,10 +1,9 @@
-//
-//  Bloom.swift
-//
-//
-//  Created by Chris Mowforth on 20/02/2020.
-//
+/*
+ Copyright 2020 TupleStream OÜ
 
+ See the LICENSE file for license information
+ SPDX-License-Identifier: Apache-2.0
+*/
 import Foundation
 
 public protocol BloomFilter: AnyObject {
