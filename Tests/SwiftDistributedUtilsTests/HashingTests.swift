@@ -42,11 +42,11 @@ class HashingTests: XCTestCase {
 
         XCTAssertEqual(n0, ring.getNode(firstItem)!)
 
-        ring.removeNode(n0)
+        let _ = ring.removeNode(n0)
 
         XCTAssertNotNil(ring.getNode(firstItem))
 
-        ring.removeNode(n1)
+        let _ = ring.removeNode(n1)
 
         XCTAssertNil(ring.getNode(firstItem))
     }
