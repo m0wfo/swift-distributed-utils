@@ -18,21 +18,21 @@ class CommonTests: XCTestCase {
         XCTAssertNoThrow(try HostAndPort(host: "foo", port: 1337))
     }
 
-    func binarySearchEmptyCollection() {
-        XCTAssertNil(Search.binarySearchOrNextHighest(array: [], target: 1))
-    }
-
-    func binarySearchOneElementHigher() {
-        let result = Search.binarySearchOrNextHighest(array: [1], target: 0)!
-        XCTAssertEqual(1, result)
-    }
-
-    func binarySearchOneElementLower() {
-        XCTAssertNil(Search.binarySearchOrNextHighest(array: [1], target: 2))
-    }
-
-    func binarySearchExactMatch() {
-        let result = Search.binarySearchOrNextHighest(array: [1,2,3], target: 2)!
-        XCTAssertEqual(2, result)
-    }
+//    func binarySearchEmptyCollection() {
+//        XCTAssertNil(Search.binarySearchOrNextHighest(array: [], target: 1))
+//    }
+//
+//    func binarySearchOneElementHigher() {
+//        let result = Search.binarySearchOrNextHighest(array: [1], target: 0)!
+//        XCTAssertEqual(1, result)
+//    }
+//
+//    func binarySearchOneElementLower() {
+//        XCTAssertNil(Search.binarySearchOrNextHighest(array: [1], target: 2))
+//    }
+//
+//    func binarySearchExactMatch() {
+//        let result = Search.binarySearchOrNextHighest(array: [1,2,3], target: 2)!
+//        XCTAssertEqual(2, result)
+//    }
 }

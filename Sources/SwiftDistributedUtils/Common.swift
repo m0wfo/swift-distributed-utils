@@ -68,9 +68,9 @@ public final class MockTimeSource: TimeSource {
 }
 
 // MARK: Search routines
-public final class Search {
+final class Search {
 
-    public static func binarySearchOrNextHighest<T: Comparable>(array: Array<T>, target: T, bestSoFar: T? = nil) -> T? {
+    public static func binarySearchOrNextHighest<T: StableHashable, U: StableHashable>(array: Array<T>, target: U, bestSoFar: T? = nil) -> T? {
         if array.isEmpty {
             return nil
         } else if array.count == 1 {
@@ -79,9 +79,9 @@ public final class Search {
 
         let midPoint = array.count / 2
 
-        if array[midPoint] > target {
+        if array[midPoint].identity > target.identity {
             if let closest = bestSoFar {
-                if array[midPoint] > closest {
+                if array[midPoint].identity > closest.identity {
                     return bestSoFar
                 }
             }

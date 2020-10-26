@@ -11,28 +11,81 @@ import SwiftDistributedUtils
 
 class HashingTests: XCTestCase {
 
-    class Widget: StableHashable {
-        var identity: UInt64 = 0
+    struct Widget: StableHashable, Comparable, Hashable {
+        static func < (lhs: HashingTests.Widget, rhs: HashingTests.Widget) -> Bool {
+            return lhs.identity < rhs.identity
+        }
+
+        static func == (lhs: HashingTests.Widget, rhs: HashingTests.Widget) -> Bool {
+            return lhs.identity == rhs.identity
+        }
+
+        public func hash(into hasher: inout Hasher) {
+            return hasher.combine(identity)
+        }
+
+        var identity: UInt64
+    }
+
+    struct HaplessItem: StableHashable {
+        var identity: UInt64
     }
 
     func testAddSingleItem() {
-        let ring = ConsistentHashRing<Widget>()
-        ring.addNode("node0")
+        let ring = ConsistentHashRing<HaplessItem, Widget>()
+        let n0 = Widget(identity: 1)
+        ring.addNode(n0)
 
-        ring.addNode("node1")
+        let n1 = Widget(identity: 15)
+        ring.addNode(n1)
 
-        let w = Widget()
-        w.identity = 14
+        let firstItem = HaplessItem(identity: 2)
 
-        XCTAssertNotNil(ring.getNode(w))
+        XCTAssertEqual(n0, ring.getNode(firstItem)!)
 
-        ring.removeNode("node0")
+        ring.removeNode(n0)
 
-        XCTAssertNotNil(ring.getNode(w))
+        XCTAssertNotNil(ring.getNode(firstItem))
 
-        ring.removeNode("node1")
+        ring.removeNode(n1)
 
-        XCTAssertNil(ring.getNode(w))
+        XCTAssertNil(ring.getNode(firstItem))
+    }
+
+    func testLargeRing() {
+        let ring = ConsistentHashRing<HaplessItem, Widget>()
+
+        for i in 1...128 {
+            ring.addNode(Widget(identity: UInt64(i)))
+        }
+
+        let entry = HaplessItem(identity: 10)
+        let secondEntry = HaplessItem(identity: 120)
+        let targetNode = ring.getNode(entry)!
+
+        XCTAssertEqual(entry.identity, targetNode.identity)
+        XCTAssertEqual(secondEntry.identity, ring.getNode(secondEntry)!.identity)
+
+        XCTAssertTrue(ring.removeNode(targetNode))
+
+        let newTarget = ring.getNode(entry)
+
+        XCTAssertEqual(9, newTarget?.identity)
+        // souldn't have affected hash position of some way-off item
+        XCTAssertEqual(secondEntry.identity, ring.getNode(secondEntry)!.identity)
+    }
+
+    func testItemHashLargerThanAvailable() {
+        let ring = ConsistentHashRing<HaplessItem, Widget>()
+
+        for i in 1...128 {
+            ring.addNode(Widget(identity: UInt64(i)))
+        }
+
+        // max 'machine' hash value is 128; any target value should wrap back to last item
+
+        let entry = HaplessItem(identity: 512)
+        XCTAssertEqual(128, ring.getNode(entry)!.identity)
     }
 
     func testMurmurBasicCases() {

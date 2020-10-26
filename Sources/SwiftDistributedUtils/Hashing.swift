@@ -9,90 +9,64 @@ public protocol StableHashable {
     var identity: UInt64 { get }
 }
 
-public class Node: Codable, Comparable, StableHashable, Hashable {
-
-    let label: String
-    let pointSpace: UInt64
-    let id: UInt64?
-
-    fileprivate init(_ label: String, _ pointSpace: UInt64, id: UInt64? = nil) {
-        self.label = label
-        self.pointSpace = pointSpace
-        self.id = id
-    }
-
-    public var identity: UInt64 {
-        get {
-            if let predefined = id {
-                return pointSpace % predefined
-            }
-            return pointSpace % XXHash.hash(data: Array(label.utf8))
-        }
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(label)
-    }
-
-    public static func ==(lhs: Node, rhs: Node) -> Bool {
-        return lhs.identity == rhs.identity
-    }
-
-    public static func <(lhs: Node, rhs: Node) -> Bool {
-        return lhs.identity < rhs.identity
-    }
-}
-
 /// A consistently hashed ring of nodes.
 public protocol HashRing {
     associatedtype Item: StableHashable
+    associatedtype Member: StableHashable
 
-    func addNode(_ label: String)
-    func removeNode(_ label: String)
-    func getNode(_ item: Item) -> Node?
+    func addNode(_ member: Member)
+    func removeNode(_ member: Member) -> Bool
+    func getNode(_ item: Item) -> Member?
 }
 
 /// Classical consistent hash ring, using a binary search to find the next highest node for an item
-public final class ConsistentHashRing<T: StableHashable>: HashRing, Equatable {
+public final class ConsistentHashRing<T: StableHashable, U: StableHashable & Hashable & Comparable>: HashRing, Equatable {
     public typealias Item = T
+    public typealias Member = U
 
-    private var nodeSet: Set<Node>
-    private var nodes: [Node]
+    struct ItemNode: Comparable {
+        let id: UInt64
+
+        static func < (lhs: ConsistentHashRing<T, U>.ItemNode, rhs: ConsistentHashRing<T, U>.ItemNode) -> Bool {
+            return lhs.id < rhs.id
+        }
+    }
+
+    private var nodeSet: Set<Member>
+    private var nodes: [Member]
     private let pointSpace: UInt64
 
-    public init(pointSpace: UInt64 = (1 << 63)) {
+    public init(pointSpace: UInt64 = (1 << 64)) {
         self.pointSpace = pointSpace
         self.nodes = Array()
         self.nodeSet = Set()
     }
 
-    public func addNode(_ label: String) {
-        let node = Node(label, pointSpace)
-        if nodeSet.contains(node) {
+    public func addNode(_ member: Member) {
+        if nodeSet.contains(member) {
             return
         }
 
-        nodeSet.insert(node)
+        nodeSet.insert(member)
         nodes = nodeSet.sorted()
     }
 
-    public func removeNode(_ label: String) {
-        let node = Node(label, pointSpace)
-        if !nodeSet.contains(node) {
-            return
+    public func removeNode(_ member: Member) -> Bool {
+        if !nodeSet.contains(member) {
+            return false
         }
 
-        nodeSet.remove(node)
+        nodeSet.remove(member)
         nodes = nodeSet.sorted()
+        return true
     }
 
-    public func getNode(_ item: T) -> Node? {
+    public func getNode(_ item: Item) -> Member? {
         if nodes.isEmpty {
             return nil
         }
 
-        let placeholder = Node("", pointSpace, id: item.identity)
-        return Search.binarySearchOrNextHighest(array: nodes, target: placeholder)
+        return Search.binarySearchOrNextHighest(array: nodes, target: item)
     }
 
     public static func ==(lhs: ConsistentHashRing, rhs: ConsistentHashRing) -> Bool {
@@ -102,7 +76,7 @@ public final class ConsistentHashRing<T: StableHashable>: HashRing, Equatable {
 
 // MARK: Common hash functions
 
-extension UInt64 {
+fileprivate extension UInt64 {
 
     func rotateLeft(_ distance: Int) -> UInt64 {
         return self << distance | self >> (64 - distance)
