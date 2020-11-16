@@ -20,7 +20,7 @@ public protocol HashRing {
     associatedtype Item: StableHashable
     associatedtype Member: StableHashable
 
-    func addNode(_ member: Member)
+    func addNode(_ member: Member) -> Bool
     func removeNode(_ member: Member) -> Bool
     func getNode(_ item: Item) -> Member?
 }
@@ -48,13 +48,14 @@ public final class ConsistentHashRing<T: StableHashable, U: StableHashable & Has
         self.nodeSet = Set()
     }
 
-    public func addNode(_ member: Member) {
+    public func addNode(_ member: Member) -> Bool {
         if nodeSet.contains(member) {
-            return
+            return false
         }
 
         nodeSet.insert(member)
         nodes = nodeSet.sorted()
+        return true
     }
 
     public func removeNode(_ member: Member) -> Bool {

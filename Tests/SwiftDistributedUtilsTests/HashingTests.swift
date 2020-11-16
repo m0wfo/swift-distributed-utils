@@ -33,10 +33,10 @@ class HashingTests: XCTestCase {
     func testAddSingleItem() {
         let ring = ConsistentHashRing<HaplessItem, Widget>()
         let n0 = Widget(identity: 1)
-        ring.addNode(n0)
+        let _ = ring.addNode(n0)
 
         let n1 = Widget(identity: 15)
-        ring.addNode(n1)
+        let _ = ring.addNode(n1)
 
         let firstItem = HaplessItem(identity: 2)
 
@@ -55,7 +55,7 @@ class HashingTests: XCTestCase {
         let ring = ConsistentHashRing<HaplessItem, Widget>()
 
         for i in 1...128 {
-            ring.addNode(Widget(identity: UInt64(i)))
+            let _ = ring.addNode(Widget(identity: UInt64(i)))
         }
 
         let entry = HaplessItem(identity: 10)
@@ -78,7 +78,7 @@ class HashingTests: XCTestCase {
         let ring = ConsistentHashRing<HaplessItem, Widget>()
 
         for i in 1...128 {
-            ring.addNode(Widget(identity: UInt64(i)))
+            let _ = ring.addNode(Widget(identity: UInt64(i)))
         }
 
         // max 'machine' hash value is 128; any target value should wrap back to last item
@@ -86,6 +86,26 @@ class HashingTests: XCTestCase {
         let entry = HaplessItem(identity: 512)
         XCTAssertEqual(128, ring.getNode(entry)!.identity)
     }
+
+//    func testBenchmarkMemberLookup() {
+//        let ring = ConsistentHashRing<HaplessItem, Widget>()
+//
+//        for i in 1...10 {
+//            let _ = ring.addNode(Widget(identity: UInt64(i * 10)))
+//        }
+//
+//        let startTime = Date()
+//
+//        let item = HaplessItem(identity: 1024)
+//        for _ in 0...1000000 {
+//            let x = ring.getNode(item)
+//            XCTAssertNotNil(x)
+//        }
+//
+//        let endTime = Date()
+//
+//        print("Lookups took: \(startTime.distance(to: endTime))")
+//    }
 
     func testMurmurBasicCases() {
         let cases = [
