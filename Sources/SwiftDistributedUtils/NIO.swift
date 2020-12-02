@@ -124,12 +124,13 @@ public class MonitoringServer {
     public func start() -> Channel {
         let bootstrap = ServerBootstrap(group: group)
             .serverChannelOption(ChannelOptions.backlog, value: 256)
-            .serverChannelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
+            .serverChannelOption(ChannelOptions.socket(SocketOptionLevel(SOL_SOCKET), SO_REUSEADDR), value: 1)
             .childChannelInitializer { channel in
                 channel.pipeline.configureHTTPServerPipeline(position: .last, withPipeliningAssistance: false, withServerUpgrade: nil, withErrorHandling: true).flatMap { _ in
                     channel.pipeline.addHandler(MonitoringHandler(probes: self.probes))
                 }
             }
+            .childChannelOption(ChannelOptions.socket(SocketOptionLevel(SOL_SOCKET), SO_REUSEADDR), value: 1)
             .childChannelOption(ChannelOptions.maxMessagesPerRead, value: 16)
             .childChannelOption(ChannelOptions.recvAllocator, value: AdaptiveRecvByteBufferAllocator())
 
