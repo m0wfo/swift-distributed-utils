@@ -5,6 +5,7 @@
  SPDX-License-Identifier: Apache-2.0
 */
 import Foundation
+import Lifecycle
 import Logging
 import NIO
 import NIOHTTP1
@@ -107,13 +108,14 @@ fileprivate class MonitoringHandler: ChannelInboundHandler {
     }
 }
 
-public class MonitoringServer {
+public class MonitoringServer: LifecycleTask {
 
     public let label: String = "monitoring"
 
     private let port: Int
     private let group: EventLoopGroup
     private let probes: [ReadyProbe]
+    private let log = Logger(label: "Monitoring")
 
     public init(probes: [ReadyProbe], _ group: EventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1), port: Int = 4545) {
         self.group = group
@@ -121,7 +123,7 @@ public class MonitoringServer {
         self.probes = probes
     }
 
-    public func start() -> Channel {
+    public func start(_ callback: @escaping (Error?) -> Void) {
         let bootstrap = ServerBootstrap(group: group)
             .serverChannelOption(ChannelOptions.backlog, value: 256)
             .serverChannelOption(ChannelOptions.socket(SocketOptionLevel(SOL_SOCKET), SO_REUSEADDR), value: 1)
@@ -137,10 +139,17 @@ public class MonitoringServer {
         let channel = try! { () -> Channel in
             return try bootstrap.bind(host: "0.0.0.0", port: port).wait()
         }()
-        return channel
+
+        guard let localBind = channel.localAddress else {
+            fatalError("Unable to set up source service, could not bind to address 0.0.0.0")
+        }
+
+        log.info("\(label) service started and listening on \(localBind)")
+        callback(nil)
     }
 
-    public func stop() {
+    public func shutdown(_ callback: @escaping (Error?) -> Void) {
         try! group.syncShutdownGracefully()
+        callback(nil)
     }
 }
