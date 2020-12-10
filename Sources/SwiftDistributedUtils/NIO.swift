@@ -50,7 +50,16 @@ public extension ClientBootstrap {
 
     func connectWithRetry(host: String, port: Int, strategy: RetryStrategy) -> EventLoopFuture<Channel> {
         return connect(host: host, port: port).flatMapError { err in
-            Logger(label: "ClientBootstrapExtension").warning("Unable to connect to \(host):\(port), error: \(err.localizedDescription)")
+            let log = Logger(label: "ClientBootstrapExtension")
+            switch err {
+            case let nioErr as NIO.NIOConnectionError:
+                log.warning("Unable to connect to \(host):\(port), errors:")
+                for e in nioErr.connectionErrors {
+                    log.warning("\t\(e.error.localizedDescription)")
+                }
+            default:
+                log.warning("Unable to connect to \(host):\(port), error: \(err.localizedDescription)")
+            }
             if let amount = strategy.timeToWait {
                 Thread.sleep(forTimeInterval: amount.timeInterval)
                 return self.connectWithRetry(host: host, port: port, strategy: strategy.nextTransition)
